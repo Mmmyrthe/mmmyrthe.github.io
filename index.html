@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woningen-tracker &middot; Surhuisterveen e.o.</title>
+<style>
+  :root{
+    --bg:#f7f5f1; --card:#ffffff; --ink:#26221c; --muted:#7a7266; --line:#e8e3da;
+    --accent:#2f6b4f; --accent-soft:#e7f0ea; --gold:#b98a2e; --new:#b4552d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{font-size:16px}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+    line-height:1.45; padding:2rem 1rem 4rem;
+    font-feature-settings:"kern" 1,"liga" 1; text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:960px; margin:0 auto}
+  header{margin-bottom:1.75rem}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--accent); font-weight:600; margin-bottom:.5rem;
+  }
+  h1{font-size:1.65rem; font-weight:700; letter-spacing:-.01em}
+  .sub{color:var(--muted); margin-top:.35rem; max-width:65ch}
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.75rem; margin:1.5rem 0 1.25rem}
+  .tile{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem}
+  .tile b{display:block; font-size:1.45rem; font-weight:700; font-variant-numeric:tabular-nums lining-nums}
+  .tile span{font-size:.78rem; color:var(--muted)}
+  .controls{display:flex; flex-wrap:wrap; gap:.6rem; margin-bottom:1.25rem; align-items:center}
+  select,input[type=search]{
+    font:inherit; font-size:.88rem; padding:.45rem .7rem; border:1px solid var(--line);
+    border-radius:8px; background:var(--card); color:var(--ink);
+  }
+  input[type=search]{flex:1; min-width:170px}
+  .count{font-size:.82rem; color:var(--muted); margin-left:auto}
+  .list{display:flex; flex-direction:column; gap:.7rem}
+  .huis{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:1rem 1.15rem; display:grid; grid-template-columns:3.2rem 1fr auto; gap:1rem; align-items:center;
+  }
+  .scorebox{
+    width:3.2rem; height:3.2rem; border-radius:10px; background:var(--accent-soft);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .scorebox b{font-size:1.15rem; color:var(--accent); font-variant-numeric:tabular-nums}
+  .scorebox span{font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+  .huis h2{font-size:1.02rem; font-weight:600}
+  .huis h2 a{color:inherit; text-decoration:none}
+  .huis h2 a:hover{color:var(--accent); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:2px}
+  .plaats{color:var(--muted); font-size:.85rem}
+  .specs{display:flex; flex-wrap:wrap; gap:.35rem .9rem; margin-top:.45rem; font-size:.82rem; color:var(--ink)}
+  .specs span{white-space:nowrap; font-variant-numeric:tabular-nums}
+  .specs .dim{color:var(--muted)}
+  .prijs{text-align:right}
+  .prijs b{font-size:1.05rem; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .prijs .kk{display:block; font-size:.72rem; color:var(--muted)}
+  .badges{display:flex; gap:.35rem; justify-content:flex-end; margin-top:.4rem; flex-wrap:wrap}
+  .badge{font-size:.66rem; letter-spacing:.07em; text-transform:uppercase; font-weight:600;
+    padding:.15rem .45rem; border-radius:99px}
+  .b-new{background:#f6e3d9; color:var(--new)}
+  .b-label{background:#eef2ee; color:#4c5a4c}
+  .b-rand{background:#f1ecdf; color:var(--gold)}
+  .b-tuin{background:#fbf3e2; color:var(--gold)}
+  footer{margin-top:2rem; font-size:.78rem; color:var(--muted); max-width:70ch}
+  footer p+p{margin-top:.5rem}
+  @media (max-width:640px){
+    .huis{grid-template-columns:2.7rem 1fr}
+    .prijs{grid-column:2; text-align:left}
+    .badges{justify-content:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Househunting &middot; dagelijkse scan</div>
+    <h1>Woningen-tracker &mdash; Surhuisterveen e.o.</h1>
+    <p class="sub">Koopwoningen in Surhuisterveen (alleen het dorp zelf), &euro;&nbsp;300.000&ndash;400.000, minimaal 3&nbsp;slaapkamers, tuin &ge;&nbsp;150&nbsp;m&sup2;. Plus&shy;punt: slaapkamer op zolder. Laatste scan: <span id="scandate">16 juli 2026</span>.</p>
+  </header>
+
+  <div class="tiles">
+    <div class="tile"><b id="t-n">4</b><span>woningen actueel</span></div>
+    <div class="tile"><b id="t-new">0</b><span>nieuw bij laatste scan</span></div>
+    <div class="tile"><b id="t-top">&ndash;</b><span>hoogste score</span></div>
+    <div class="tile"><b>&euro;&nbsp;345.000</b><span>mediane vraagprijs</span></div>
+  </div>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="Zoek op adres of plaats&hellip;">
+    <select id="f-plaats"><option value="">Alle plaatsen</option></select>
+    <select id="f-sort">
+      <option value="score">Sorteer: score</option>
+      <option value="prijs">Prijs (laag &rarr; hoog)</option>
+      <option value="perceel">Perceel (groot &rarr; klein)</option>
+      <option value="nieuw">Nieuwste eerst</option>
+    </select>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <footer>
+    <p>Scores (0&ndash;100) wegen tuingrootte, prijs, slaapkamers, woonoppervlak en energielabel; een slaapkamer op zolder telt als bonus. Woningen met &lsquo;Tuin &lt; 150&nbsp;m&sup2;?&rsquo; halen het harde tuincriterium mogelijk net niet &mdash; de gemeten achtertuin is kleiner, maar voor- en zijtuin tellen soms mee.</p>
+    <p>Bron: Funda. Aanbod van VBO-makelaars wordt meegescand via Vastgoed Nederland. Dit overzicht wordt elke ochtend automatisch bijgewerkt.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = [{"id": "44410119", "adres": "Badlaan 20", "plaats": "Surhuisterveen", "prijs": 325000, "woon": 123, "perceel": 279, "sk": 5, "label": "D", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-badlaan-20/44410119/", "score": 81, "tuin": "achtertuin 124 m² (zuidwest) + voortuin", "tuinTwijfel": true, "zolder": true, "voorbehoud": false, "bouwjaar": 1968, "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "44450310", "adres": "Taeke Schuilengalaan 41", "plaats": "Surhuisterveen", "prijs": 325000, "woon": 100, "perceel": 339, "sk": 4, "label": "D", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-taeke-schuilengalaan-41/44450310/", "score": 64, "tuin": "achtertuin 128 m² (noordwest) + voor- en zijtuin", "tuinTwijfel": true, "zolder": false, "voorbehoud": true, "bouwjaar": 1955, "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "44493687", "adres": "Blauwhuisterweg 36", "plaats": "Surhuisterveen", "prijs": 395000, "woon": 100, "perceel": 405, "sk": 3, "label": "E", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-blauwhuisterweg-36/44493687/", "score": 62, "tuin": "beschutte achtertuin, perceel 405 m² — waarschijnlijk ruim ≥150 m²", "tuinTwijfel": false, "zolder": false, "voorbehoud": false, "bouwjaar": 1937, "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "43398655", "adres": "Taeke Schuilengalaan 69", "plaats": "Surhuisterveen", "prijs": 365000, "woon": 95, "perceel": 291, "sk": 3, "label": "C", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-taeke-schuilengalaan-69/43398655/", "score": 54, "tuin": "tuin 120 m² (west), aangelegd 2014 met schuur en terrasoverkapping", "tuinTwijfel": true, "zolder": false, "voorbehoud": false, "bouwjaar": 1955, "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}];
+const LATEST = DATA.reduce((m,x)=> x.firstSeen>m ? x.firstSeen : m, "");
+const nf = new Intl.NumberFormat("nl-NL");
+const el = id => document.getElementById(id);
+
+const plaatsen = [...new Set(DATA.map(x=>x.plaats))].sort();
+for(const p of plaatsen){ const o=document.createElement("option"); o.value=o.textContent=p; el("f-plaats").appendChild(o); }
+
+const isNew = x => x.firstSeen === LATEST && x.status === "nieuw";
+el("t-new").textContent = DATA.filter(isNew).length;
+el("t-top").textContent = Math.max(...DATA.map(x=>x.score));
+
+function render(){
+  const q = el("q").value.toLowerCase();
+  const fp = el("f-plaats").value;
+  const sort = el("f-sort").value;
+  let rows = DATA.filter(x =>
+    (!fp || x.plaats===fp) &&
+    (!q || (x.adres+" "+x.plaats).toLowerCase().includes(q)));
+  rows.sort((a,b)=>
+    sort==="prijs" ? a.prijs-b.prijs :
+    sort==="perceel" ? b.perceel-a.perceel :
+    sort==="nieuw" ? (b.firstSeen.localeCompare(a.firstSeen) || b.score-a.score) :
+    b.score-a.score);
+  el("count").textContent = rows.length + " van " + DATA.length;
+  el("list").innerHTML = rows.map(x=>`
+    <article class="huis">
+      <div class="scorebox"><b>${x.score}</b><span>score</span></div>
+      <div>
+        <h2><a href="${x.url}" target="_blank" rel="noopener">${x.adres}</a></h2>
+        <div class="plaats">${x.plaats} &middot; bouwjaar ${x.bouwjaar}</div>
+        <div class="specs">
+          <span>${x.woon}&nbsp;m&sup2; wonen</span>
+          <span>${nf.format(x.perceel)}&nbsp;m&sup2; perceel</span>
+          <span>${x.sk}&nbsp;slaapkamers</span>
+          <span class="dim">${x.tuin}</span>
+        </div>
+      </div>
+      <div class="prijs">
+        <b>&euro;&nbsp;${nf.format(x.prijs)}</b><span class="kk">kosten koper</span>
+        <div class="badges">
+          ${isNew(x) ? '<span class="badge b-new">Nieuw</span>' : ""}
+          ${x.voorbehoud ? '<span class="badge b-new">Onder voorbehoud</span>' : ""}
+          ${x.zolder ? '<span class="badge b-label">Slaapkamer op zolder</span>' : ""}
+          ${x.label!=="–" ? '<span class="badge b-label">Label '+x.label+"</span>" : ""}
+          ${x.tuinTwijfel ? '<span class="badge b-tuin">Tuin &lt; 150 m&sup2;?</span>' : ""}
+        </div>
+      </div>
+    </article>`).join("");
+}
+["q","f-plaats","f-sort"].forEach(id => el(id).addEventListener("input", render));
+render();
+</script>
+</body>
+</html>
