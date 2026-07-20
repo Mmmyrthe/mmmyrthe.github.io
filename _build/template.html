@@ -72,6 +72,21 @@
   .b-new{background:#f6e3d9; color:var(--new)}
   .b-label{background:#eef2ee; color:#4c5a4c}
   .b-tuin{background:#fbf3e2; color:var(--gold)}
+  .b-eA{background:#dff0e2; color:#1c6b3a}
+  .b-eB{background:#e7f0d8; color:#4a7020}
+  .b-eC{background:#f7f0d2; color:#7d6a12}
+  .b-eD{background:#fbe8cd; color:#8f5a14}
+  .b-eE{background:#fadfc9; color:#9c4a10}
+  .b-eFG{background:#f8d9d2; color:#a03421}
+  .badge[title]{cursor:help}
+  .uitleg{margin-top:1.5rem; background:var(--card); border:1px solid var(--line); border-radius:12px}
+  .uitleg summary{padding:.85rem 1.15rem; cursor:pointer; font-weight:600; font-size:.9rem; list-style:none}
+  .uitleg summary::before{content:"\2139\FE0E"; margin-right:.5rem; color:var(--accent)}
+  .uitleg[open] summary{border-bottom:1px solid var(--line)}
+  .uitleg .body{padding:1rem 1.15rem; font-size:.85rem; color:var(--ink)}
+  .uitleg .body p{margin-bottom:.6rem; max-width:70ch}
+  .uitleg .body p:last-child{margin-bottom:0}
+  .uitleg .body .badge{margin-right:.3rem}
   footer{margin-top:2rem; font-size:.78rem; color:var(--muted); max-width:70ch}
   footer p+p{margin-top:.5rem}
   @media (max-width:640px){
@@ -116,6 +131,15 @@
 
   <div class="list" id="list"></div>
 
+  <details class="uitleg">
+    <summary>Wat betekenen de score en de labels?</summary>
+    <div class="body">
+      <p><strong>Score (0&ndash;100):</strong> hoe goed de woning bij jullie wensen past. Telt mee: tuingrootte, prijs (goedkoper is beter binnen het budget), aantal slaapkamers, woonoppervlak, energielabel, een slaapkamer op zolder (+10) en een voorkeursstraat (+5). Boven de 75 is een sterke match; onder de 60 voldoet de woning w&eacute;l aan de eisen maar zonder extra&rsquo;s.</p>
+      <p><strong>Energielabel</strong> (schaal A&ndash;G): hoe zuinig de woning is &mdash; <span class="badge b-eA">A = zeer zuinig</span> <span class="badge b-eC">C&ndash;D = gemiddeld</span> <span class="badge b-eFG">F&ndash;G = onzuinig</span>. Een slechter label betekent hogere energiekosten en vaak nog isolatiewerk.</p>
+      <p><span class="badge b-new">Nieuw</span> vandaag voor het eerst gevonden &middot; <span class="badge b-new">Onder voorbehoud</span> er is al een koper, verkoop bijna rond &middot; <span class="badge b-label">Zolderkamer</span> slaapkamer op zolder aanwezig (jullie wens) &middot; <span class="badge b-label">Voorkeursstraat</span> straat van jullie voorkeurslijst &middot; <span class="badge b-tuin">Tuin &lt; 150 m&sup2;?</span> gemeten achtertuin is kleiner dan de eis &mdash; voor- en zijtuin tellen soms mee, dus check de listing zelf.</p>
+    </div>
+  </details>
+
   <footer>
     <p>Scores (0&ndash;100) wegen tuingrootte, prijs, slaapkamers, woonoppervlak en energielabel; een slaapkamer op zolder telt als bonus. &lsquo;Tuin&nbsp;&lt;&nbsp;150&nbsp;m&sup2;?&rsquo; betekent dat de gemeten achtertuin kleiner is &mdash; voor- en zijtuin tellen soms mee, dus check de listing.</p>
     <p>Bron: Funda. Foto&rsquo;s worden rechtstreeks bij Funda opgehaald. Dit overzicht wordt elke ochtend automatisch bijgewerkt.</p>
@@ -131,6 +155,11 @@ const isNew = x => x.status === "nieuw";
 el("t-new").textContent = DATA.filter(isNew).length;
 el("t-top").textContent = DATA.length ? Math.max(...DATA.map(x=>x.score)) : "–";
 
+function labelBadge(l){
+  if(!l || l==="–") return "";
+  const cls = l.startsWith("A") ? "b-eA" : l==="B" ? "b-eB" : l==="C" ? "b-eC" : l==="D" ? "b-eD" : l==="E" ? "b-eE" : "b-eFG";
+  return `<span class="badge ${cls}" title="Energielabel ${l} — schaal van A (zeer zuinig) tot G (onzuinig)">Energielabel ${l}</span>`;
+}
 function card(x){
   const foto = x.foto
     ? `<img class="foto" src="${x.foto}" loading="lazy" alt="Foto ${x.adres}" referrerpolicy="no-referrer" onerror="this.closest('.huis').classList.add('nofoto')">`
@@ -138,7 +167,7 @@ function card(x){
   return `<article class="huis${x.foto ? '' : ' nofoto'}">
     ${foto}
     <div class="row">
-      <div class="scorebox"><b>${x.score}</b><span>score</span></div>
+      <div class="scorebox" title="Matchscore 0–100: hoe goed deze woning bij jullie wensen past — zie de uitleg onderaan"><b>${x.score}</b><span>score</span></div>
       <div>
         <h2><a href="${x.url}" target="_blank" rel="noopener">${x.adres}</a></h2>
         <div class="plaats">${x.plaats}${x.bouwjaar ? " &middot; bouwjaar " + x.bouwjaar : ""}</div>
@@ -152,12 +181,12 @@ function card(x){
       <div class="prijs">
         <b>&euro;&nbsp;${nf.format(x.prijs)}</b><span class="kk">kosten koper</span>
         <div class="badges">
-          ${isNew(x) ? '<span class="badge b-new">Nieuw</span>' : ""}
-          ${x.voorkeur ? '<span class="badge b-label">Voorkeursstraat</span>' : ""}
-          ${x.voorbehoud ? '<span class="badge b-new">Onder voorbehoud</span>' : ""}
-          ${x.zolder ? '<span class="badge b-label">Zolderkamer</span>' : ""}
-          ${x.label!=="–" ? '<span class="badge b-label">Label '+x.label+'</span>' : ""}
-          ${x.tuinTwijfel ? '<span class="badge b-tuin">Tuin &lt; 150 m&sup2;?</span>' : ""}
+          ${isNew(x) ? '<span class="badge b-new" title="Bij de laatste scan voor het eerst gevonden">Nieuw</span>' : ""}
+          ${x.voorkeur ? '<span class="badge b-label" title="Deze straat staat op jullie voorkeurslijst (+5 score)">Voorkeursstraat</span>' : ""}
+          ${x.voorbehoud ? '<span class="badge b-new" title="Er is al een koper; de verkoop is bijna rond">Onder voorbehoud</span>' : ""}
+          ${x.zolder ? '<span class="badge b-label" title="Slaapkamer op zolder aanwezig (+10 score)">Zolderkamer</span>' : ""}
+          ${labelBadge(x.label)}
+          ${x.tuinTwijfel ? '<span class="badge b-tuin" title="De gemeten achtertuin is kleiner dan 150 m² — voor- en zijtuin tellen soms mee, check de listing">Tuin &lt; 150 m&sup2;?</span>' : ""}
         </div>
       </div>
     </div>
