@@ -10,6 +10,13 @@ import json, statistics, sys, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SCAN_DATE = sys.argv[1] if len(sys.argv) > 1 else "onbekend"
+# argv[2] = weergavetekst voor 'laatst bijgewerkt', bv. "21-07-2026 08:03". Anders afgeleid van datum.
+def _nl_date(d):
+    try:
+        y, m, day = d.split("-"); return "%s-%s-%s" % (day, m, y)
+    except Exception:
+        return d
+UPDATED = sys.argv[2] if len(sys.argv) > 2 else _nl_date(SCAN_DATE)
 
 def rd(p, default):
     try:
@@ -55,7 +62,7 @@ for w in listings:
         "label": w.get("label") or "–", "url": w["url"], "score": score(w),
         "tuin": w.get("tuin_note",""), "tuinTwijfel": tuin is not None and tuin < 150,
         "zolder": bool(w.get("zolder")), "voorbehoud": bool(w.get("voorbehoud")),
-        "bouwjaar": w.get("bouwjaar",""), "dist": 0, "rand": False,
+        "bouwjaar": w.get("bouwjaar",""), "foto": w.get("foto",""), "dist": 0, "rand": False,
         "firstSeen": first, "status": "nieuw" if is_new else "actueel",
     })
 
@@ -73,7 +80,7 @@ med = int(statistics.median([x["prijs"] for x in items])) if items else 0
 tmpl = open(os.path.join(HERE, "template.html")).read()
 html = (tmpl.replace("__DATA__", json.dumps(items, ensure_ascii=False))
             .replace("__N__", str(n))
-            .replace("__SCANDATE__", SCAN_DATE)
+            .replace("__UPDATED__", UPDATED)
             .replace("__MED__", format(med, ",").replace(",", ".")))
 # 'nieuw'-tegel via echte firstSeen: template markeert status=='nieuw'
 open(os.path.join(ROOT, "index.html"), "w").write(html)
