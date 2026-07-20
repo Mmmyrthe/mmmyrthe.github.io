@@ -26,6 +26,7 @@ def rd(p, default):
 
 listings = rd("listings.json", [])
 state = rd("state.json", {})   # { funda_id: {"firstSeen": "YYYY-MM-DD"} }
+streets = [s.lower() for s in rd("streets.json", [])]  # voorkeursstraten (optioneel)
 
 def fid(url): return url.rstrip("/").split("/")[-1]
 
@@ -56,10 +57,12 @@ for w in listings:
         first = SCAN_DATE
         new_ids.append(i)
     tuin = w.get("tuin_m2")
+    voorkeur = any(s in w["adres"].lower() for s in streets)
     items.append({
         "id": i, "adres": w["adres"], "plaats": "Surhuisterveen",
         "prijs": w["prijs"], "woon": w["woon"], "perceel": w["perceel"], "sk": w["sk"],
-        "label": w.get("label") or "–", "url": w["url"], "score": score(w),
+        "label": w.get("label") or "–", "url": w["url"],
+        "score": min(100, score(w) + (5 if voorkeur else 0)), "voorkeur": voorkeur,
         "tuin": w.get("tuin_note",""), "tuinTwijfel": tuin is not None and tuin < 150,
         "zolder": bool(w.get("zolder")), "voorbehoud": bool(w.get("voorbehoud")),
         "bouwjaar": w.get("bouwjaar",""), "foto": w.get("foto",""), "dist": 0, "rand": False,
@@ -78,7 +81,9 @@ json.dump(newstate, open(os.path.join(HERE, "state.json"), "w"), ensure_ascii=Fa
 n = len(items)
 med = int(statistics.median([x["prijs"] for x in items])) if items else 0
 tmpl = open(os.path.join(HERE, "template.html")).read()
-html = (tmpl.replace("__DATA__", json.dumps(items, ensure_ascii=False))
+# "</" escapen zodat adres-/tuinteksten nooit de <script>-tag kunnen breken
+data_js = json.dumps(items, ensure_ascii=False).replace("</", "<\\/")
+html = (tmpl.replace("__DATA__", data_js)
             .replace("__N__", str(n))
             .replace("__UPDATED__", UPDATED)
             .replace("__MED__", format(med, ",").replace(",", ".")))

@@ -153,6 +153,7 @@ function card(x){
         <b>&euro;&nbsp;${nf.format(x.prijs)}</b><span class="kk">kosten koper</span>
         <div class="badges">
           ${isNew(x) ? '<span class="badge b-new">Nieuw</span>' : ""}
+          ${x.voorkeur ? '<span class="badge b-label">Voorkeursstraat</span>' : ""}
           ${x.voorbehoud ? '<span class="badge b-new">Onder voorbehoud</span>' : ""}
           ${x.zolder ? '<span class="badge b-label">Zolderkamer</span>' : ""}
           ${x.label!=="–" ? '<span class="badge b-label">Label '+x.label+'</span>' : ""}
