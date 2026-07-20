@@ -1,0 +1,6 @@
+[
+ {"adres":"Badlaan 20","prijs":325000,"woon":123,"perceel":279,"sk":5,"label":"D","bouwjaar":1968,"url":"https://www.funda.nl/detail/koop/surhuisterveen/huis-badlaan-20/44410119/","tuin_m2":124,"tuin_note":"achtertuin 124 m² (zuidwest) + voortuin","zolder":true,"voorbehoud":false},
+ {"adres":"Blauwhuisterweg 36","prijs":395000,"woon":100,"perceel":405,"sk":3,"label":"E","bouwjaar":1937,"url":"https://www.funda.nl/detail/koop/surhuisterveen/huis-blauwhuisterweg-36/44493687/","tuin_m2":null,"tuin_note":"beschutte achtertuin, perceel 405 m² — waarschijnlijk ruim ≥150 m²","zolder":false,"voorbehoud":false},
+ {"adres":"Taeke Schuilengalaan 41","prijs":325000,"woon":100,"perceel":339,"sk":4,"label":"D","bouwjaar":1955,"url":"https://www.funda.nl/detail/koop/surhuisterveen/huis-taeke-schuilengalaan-41/44450310/","tuin_m2":128,"tuin_note":"achtertuin 128 m² (noordwest) + voor- en zijtuin","zolder":false,"voorbehoud":true},
+ {"adres":"Taeke Schuilengalaan 69","prijs":365000,"woon":95,"perceel":291,"sk":3,"label":"C","bouwjaar":1955,"url":"https://www.funda.nl/detail/koop/surhuisterveen/huis-taeke-schuilengalaan-69/43398655/","tuin_m2":120,"tuin_note":"tuin 120 m² (west), aangelegd 2014 met schuur en terrasoverkapping","zolder":false,"voorbehoud":false}
+]
