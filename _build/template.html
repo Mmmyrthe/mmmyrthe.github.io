@@ -43,6 +43,16 @@
   }
   input[type=search]{flex:1; min-width:170px}
   .count{font-size:.82rem; color:var(--muted); margin-left:auto}
+  .actions{display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; margin:0 0 1.25rem}
+  .btn{
+    display:inline-flex; align-items:center; gap:.4rem; font:inherit; font-size:.88rem; font-weight:600;
+    padding:.55rem .95rem; border-radius:8px; text-decoration:none; cursor:pointer; border:1px solid transparent;
+  }
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{background:#255840}
+  .btn-ghost{background:var(--card); color:var(--ink); border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent)}
+  .actions .hint{font-size:.78rem; color:var(--muted)}
   .list{display:flex; flex-direction:column; gap:.9rem}
   .huis{
     background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden;
@@ -118,6 +128,13 @@
     <div class="tile"><b>&euro;&nbsp;__MED__</b><span>mediane vraagprijs</span></div>
   </div>
 
+  <div class="actions">
+    <a class="btn btn-primary" href="https://www.funda.nl/zoeken/koop?selected_area=%5B%22surhuisterveen%22%5D&price=%22300000-400000%22&object_type=%5B%22house%22%5D&sort=%22date_down%22" target="_blank" rel="noopener">Nu zelf live zoeken op Funda &rarr;</a>
+    <a class="btn btn-ghost" href="https://aanbod.vastgoednederland.nl/koopwoningen/surhuisterveen" target="_blank" rel="noopener">VBO-makelaars</a>
+    <a class="btn btn-ghost" href="https://www.huislijn.nl/koopwoning/nederland/friesland/surhuisterveen" target="_blank" rel="noopener">Huislijn</a>
+    <span class="hint">Deze tracker ververst automatisch elke ochtend; deze knoppen tonen het aanbod van dit moment.</span>
+  </div>
+
   <div class="controls">
     <input type="search" id="q" placeholder="Zoek op adres of straat&hellip;">
     <select id="f-sort">
@@ -142,7 +159,7 @@
 
   <footer>
     <p>Scores (0&ndash;100) wegen tuingrootte, prijs, slaapkamers, woonoppervlak en energielabel; een slaapkamer op zolder telt als bonus. &lsquo;Tuin&nbsp;&lt;&nbsp;150&nbsp;m&sup2;?&rsquo; betekent dat de gemeten achtertuin kleiner is &mdash; voor- en zijtuin tellen soms mee, dus check de listing.</p>
-    <p>Bron: Funda. Foto&rsquo;s worden rechtstreeks bij Funda opgehaald. Dit overzicht wordt elke ochtend automatisch bijgewerkt.</p>
+    <p><strong>Bronnen die de dagelijkse scan doorzoekt:</strong> Funda (NVM-makelaars), VBO-makelaars (via Vastgoed Nederland), Huislijn, en een brede webzoekopdracht als vangnet voor particulier/zelfverkoop-aanbod. Foto&rsquo;s worden rechtstreeks bij Funda opgehaald. Dit overzicht wordt elke ochtend automatisch bijgewerkt.</p>
   </footer>
 </div>
 
