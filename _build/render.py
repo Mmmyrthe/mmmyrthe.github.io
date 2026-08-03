@@ -38,7 +38,7 @@ def score(w):
     s = 40
     tuin = w.get("tuin_m2")
     t = tuin if tuin is not None else max(0, w["perceel"] - 130)
-    s += 20 if t>=300 else 16 if t>=200 else 10 if t>=150 else 4
+    s += 20 if t>=300 else 16 if t>=200 else 12 if t>=150 else 8 if t>=100 else 4
     s += round((400000 - w["prijs"]) / 100000 * 12)
     sk = w["sk"]; s += 0 if sk<=3 else 5 if sk==4 else 8
     woon = w["woon"]; s += 10 if woon>=140 else 8 if woon>=120 else 4 if woon>=100 else 2
@@ -72,7 +72,7 @@ for w in listings:
         "prijs": w["prijs"], "woon": w["woon"], "perceel": w["perceel"], "sk": w["sk"],
         "label": w.get("label") or "–", "url": w["url"],
         "score": min(100, score(w) + (5 if voorkeur else 0)), "voorkeur": voorkeur,
-        "tuin": w.get("tuin_note",""), "tuinTwijfel": tuin is not None and tuin < 150,
+        "tuin": w.get("tuin_note",""), "tuinTwijfel": tuin is not None and tuin < 80,
         "zolder": bool(w.get("zolder")), "voorbehoud": bool(w.get("voorbehoud")),
         "bouwjaar": w.get("bouwjaar",""), "foto": w.get("foto",""), "dist": 0, "rand": False,
         "firstSeen": first, "status": "nieuw" if is_new else "actueel",

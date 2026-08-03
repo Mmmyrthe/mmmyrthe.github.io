@@ -113,7 +113,7 @@
     <div>
       <div class="eyebrow">Househunting &middot; dagelijkse scan</div>
       <h1>Woningen-tracker &mdash; Surhuisterveen</h1>
-      <p class="sub">Koopwoningen in Surhuisterveen, &euro;&nbsp;300.000&ndash;400.000, minimaal 3&nbsp;slaapkamers, tuin &ge;&nbsp;150&nbsp;m&sup2;. Pluspunt: slaapkamer op zolder.</p>
+      <p class="sub">Koopwoningen in Surhuisterveen, &euro;&nbsp;300.000&ndash;400.000, minimaal 3&nbsp;slaapkamers, tuin &ge;&nbsp;80&nbsp;m&sup2; (grotere tuin scoort hoger). Pluspunt: slaapkamer op zolder.</p>
     </div>
     <div class="updated">
       <div class="lbl">Laatst bijgewerkt</div>
@@ -153,12 +153,12 @@
     <div class="body">
       <p><strong>Score (0&ndash;100):</strong> hoe goed de woning bij jullie wensen past. Telt mee: tuingrootte, prijs (goedkoper is beter binnen het budget), aantal slaapkamers, woonoppervlak, energielabel, een slaapkamer op zolder (+10) en een voorkeursstraat (+5). Boven de 75 is een sterke match; onder de 60 voldoet de woning w&eacute;l aan de eisen maar zonder extra&rsquo;s.</p>
       <p><strong>Energielabel</strong> (schaal A&ndash;G): hoe zuinig de woning is &mdash; <span class="badge b-eA">A = zeer zuinig</span> <span class="badge b-eC">C&ndash;D = gemiddeld</span> <span class="badge b-eFG">F&ndash;G = onzuinig</span>. Een slechter label betekent hogere energiekosten en vaak nog isolatiewerk.</p>
-      <p><span class="badge b-new">Nieuw</span> vandaag voor het eerst gevonden &middot; <span class="badge b-new">Onder voorbehoud</span> er is al een koper, verkoop bijna rond &middot; <span class="badge b-label">Zolderkamer</span> slaapkamer op zolder aanwezig (jullie wens) &middot; <span class="badge b-label">Voorkeursstraat</span> straat van jullie voorkeurslijst &middot; <span class="badge b-tuin">Tuin &lt; 150 m&sup2;?</span> gemeten achtertuin is kleiner dan de eis &mdash; voor- en zijtuin tellen soms mee, dus check de listing zelf.</p>
+      <p><span class="badge b-new">Nieuw</span> vandaag voor het eerst gevonden &middot; <span class="badge b-new">Onder voorbehoud</span> er is al een koper, verkoop bijna rond &middot; <span class="badge b-label">Zolderkamer</span> slaapkamer op zolder aanwezig (jullie wens) &middot; <span class="badge b-label">Voorkeursstraat</span> straat van jullie voorkeurslijst &middot; <span class="badge b-tuin">Tuin &lt; 80 m&sup2;?</span> gemeten achtertuin is kleiner dan de ondergrens &mdash; voor- en zijtuin tellen soms mee, dus check de listing zelf.</p>
     </div>
   </details>
 
   <footer>
-    <p>Scores (0&ndash;100) wegen tuingrootte, prijs, slaapkamers, woonoppervlak en energielabel; een slaapkamer op zolder telt als bonus. &lsquo;Tuin&nbsp;&lt;&nbsp;150&nbsp;m&sup2;?&rsquo; betekent dat de gemeten achtertuin kleiner is &mdash; voor- en zijtuin tellen soms mee, dus check de listing.</p>
+    <p>Scores (0&ndash;100) wegen tuingrootte, prijs, slaapkamers, woonoppervlak en energielabel; een slaapkamer op zolder telt als bonus. Grotere tuinen scoren hoger, maar niets onder de 80&nbsp;m&sup2; grens valt weg. &lsquo;Tuin&nbsp;&lt;&nbsp;80&nbsp;m&sup2;?&rsquo; betekent dat de gemeten achtertuin kleiner is &mdash; voor- en zijtuin tellen soms mee, dus check de listing.</p>
     <p><strong>Bronnen die de dagelijkse scan doorzoekt:</strong> Funda (NVM-makelaars), VBO-makelaars (via Vastgoed Nederland), Huislijn, en een brede webzoekopdracht als vangnet voor particulier/zelfverkoop-aanbod. Foto&rsquo;s worden rechtstreeks bij Funda opgehaald. Dit overzicht wordt elke ochtend automatisch bijgewerkt.</p>
   </footer>
 </div>
@@ -203,7 +203,7 @@ function card(x){
           ${x.voorbehoud ? '<span class="badge b-new" title="Er is al een koper; de verkoop is bijna rond">Onder voorbehoud</span>' : ""}
           ${x.zolder ? '<span class="badge b-label" title="Slaapkamer op zolder aanwezig (+10 score)">Zolderkamer</span>' : ""}
           ${labelBadge(x.label)}
-          ${x.tuinTwijfel ? '<span class="badge b-tuin" title="De gemeten achtertuin is kleiner dan 150 m² — voor- en zijtuin tellen soms mee, check de listing">Tuin &lt; 150 m&sup2;?</span>' : ""}
+          ${x.tuinTwijfel ? '<span class="badge b-tuin" title="De gemeten achtertuin is kleiner dan 80 m² — voor- en zijtuin tellen soms mee, check de listing">Tuin &lt; 80 m&sup2;?</span>' : ""}
         </div>
       </div>
     </div>
