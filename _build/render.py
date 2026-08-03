@@ -46,11 +46,20 @@ def score(w):
     s += 10 if w.get("zolder") else 0
     return min(100, s)
 
+REQUIRED = ("url", "adres", "prijs", "woon", "perceel", "sk")
 items = []
-seen_now = set()
+seen_ids = set()
 new_ids = []
+skipped = []
 for w in listings:
-    i = fid(w["url"]); seen_now.add(i)
+    missing = [k for k in REQUIRED if w.get(k) in (None, "")]
+    if missing:
+        skipped.append((w.get("adres") or w.get("url") or "?", missing))
+        continue
+    i = fid(w["url"])
+    if i in seen_ids:            # zelfde woning via 2 bronnen (Funda + VBO) — 1x tonen
+        continue
+    seen_ids.add(i)
     first = state.get(i, {}).get("firstSeen")
     is_new = first is None
     if is_new:
@@ -83,15 +92,19 @@ med = int(statistics.median([x["prijs"] for x in items])) if items else 0
 tmpl = open(os.path.join(HERE, "template.html")).read()
 # "</" escapen zodat adres-/tuinteksten nooit de <script>-tag kunnen breken
 data_js = json.dumps(items, ensure_ascii=False).replace("</", "<\\/")
-html = (tmpl.replace("__DATA__", data_js)
-            .replace("__N__", str(n))
+# kleine tokens EERST vervangen, __DATA__ als laatste — zo kan woningtekst
+# (adres/tuin) nooit per ongeluk een placeholder-token corrumperen
+html = (tmpl.replace("__N__", str(n))
             .replace("__UPDATED__", UPDATED)
-            .replace("__MED__", format(med, ",").replace(",", ".")))
+            .replace("__MED__", format(med, ",").replace(",", "."))
+            .replace("__DATA__", data_js))
 # 'nieuw'-tegel via echte firstSeen: template markeert status=='nieuw'
 open(os.path.join(ROOT, "index.html"), "w").write(html)
 
 summary = "%d nieuwe woning(en)" % len(new_ids) if new_ids else "geen nieuwe woningen"
 print("Gerenderd: %d woningen, %s, mediaan € %s" % (n, summary, format(med, ",").replace(",", ".")))
+for adres, missing in skipped:
+    print("  OVERGESLAGEN (ontbrekende velden %s): %s" % (", ".join(missing), adres))
 for it in items:
     if it["id"] in new_ids:
         print("  NIEUW: %s · € %s · %d slk · score %d · %s" % (
