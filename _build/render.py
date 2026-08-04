@@ -80,8 +80,13 @@ for w in listings:
 
 items.sort(key=lambda x: -x["score"])
 
-# state bijwerken
+# state bijwerken — bewaar ook ids die niet (meer) in listings staan maar wel
+# een 'rejected'-notitie hebben, zodat afgewezen woningen niet opnieuw
+# gedetailleerd worden bij een volgende scan
 newstate = {}
+for i, entry in state.items():
+    if entry.get("rejected"):
+        newstate[i] = entry
 for it in items:
     newstate[it["id"]] = {"firstSeen": it["firstSeen"]}
 json.dump(newstate, open(os.path.join(HERE, "state.json"), "w"), ensure_ascii=False, indent=1)
