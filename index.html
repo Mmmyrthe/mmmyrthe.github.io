@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<script>if(location.protocol==="http:"&&location.hostname!=="localhost"){location.replace("https://"+location.host+location.pathname+location.search);}</script>
 <title>Woningen-tracker &middot; Surhuisterveen</title>
 <style>
   :root{
@@ -53,6 +56,9 @@
   .btn-ghost{background:var(--card); color:var(--ink); border-color:var(--line)}
   .btn-ghost:hover{border-color:var(--accent); color:var(--accent)}
   .actions .hint{font-size:.78rem; color:var(--muted)}
+  h2.sectie{font-size:1.15rem; font-weight:700; margin:1.6rem 0 .8rem; letter-spacing:-.01em}
+  h2.sectie .sectie-sub{font-size:.78rem; font-weight:500; color:var(--muted); letter-spacing:0; margin-left:.4rem}
+  .leeg{color:var(--muted); font-size:.85rem; background:var(--card); border:1px dashed var(--line); border-radius:12px; padding:.9rem 1.15rem}
   .list{display:flex; flex-direction:column; gap:.9rem}
   .huis{
     background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden;
@@ -111,28 +117,31 @@
 <div class="wrap">
   <header>
     <div>
-      <div class="eyebrow">Househunting &middot; dagelijkse scan</div>
+      <div class="eyebrow">Househunting &middot; scan 2&times; per dag</div>
       <h1>Woningen-tracker &mdash; Surhuisterveen</h1>
-      <p class="sub">Koopwoningen in Surhuisterveen, &euro;&nbsp;300.000&ndash;400.000, minimaal 3&nbsp;slaapkamers, tuin &ge;&nbsp;80&nbsp;m&sup2; (grotere tuin scoort hoger). Pluspunt: slaapkamer op zolder.</p>
+      <p class="sub"><strong>Koop:</strong> &euro;&nbsp;300.000&ndash;400.000, minimaal 3&nbsp;slaapkamers, tuin &ge;&nbsp;80&nbsp;m&sup2; (grotere tuin scoort hoger). <strong>Huur:</strong> tot &euro;&nbsp;1.500 p/mnd, minimaal 3&nbsp;slaapkamers, met tuin (geen minimumgrootte). Pluspunt: slaapkamer op zolder.</p>
     </div>
     <div class="updated">
       <div class="lbl">Laatst bijgewerkt</div>
-      <div class="val">15-08-2026 19:33</div>
+      <div class="val">17-08-2026 12:01</div>
     </div>
   </header>
 
   <div class="tiles">
-    <div class="tile"><b id="t-n">3</b><span>woningen actueel</span></div>
+    <div class="tile"><b id="t-nk">3</b><span>koopwoningen actueel</span></div>
+    <div class="tile"><b id="t-nh">0</b><span>huurwoningen actueel</span></div>
     <div class="tile"><b id="t-new">0</b><span>nieuw bij laatste scan</span></div>
     <div class="tile"><b id="t-top">&ndash;</b><span>hoogste score</span></div>
-    <div class="tile"><b>&euro;&nbsp;365.000</b><span>mediane vraagprijs</span></div>
+    <div class="tile"><b>&euro;&nbsp;365.000</b><span>mediane vraagprijs (koop)</span></div>
   </div>
 
   <div class="actions">
-    <a class="btn btn-primary" href="https://www.funda.nl/zoeken/koop?selected_area=%5B%22surhuisterveen%22%5D&price=%22300000-400000%22&object_type=%5B%22house%22%5D&sort=%22date_down%22" target="_blank" rel="noopener">Nu zelf live zoeken op Funda &rarr;</a>
+    <a class="btn btn-primary" href="https://www.funda.nl/zoeken/koop?selected_area=%5B%22surhuisterveen%22%5D&price=%22300000-400000%22&object_type=%5B%22house%22%5D&sort=%22date_down%22" target="_blank" rel="noopener">Koop op Funda &rarr;</a>
+    <a class="btn btn-primary" href="https://www.funda.nl/zoeken/huur?selected_area=%5B%22surhuisterveen%22%5D&price=%22-1500%22&sort=%22date_down%22" target="_blank" rel="noopener">Huur op Funda &rarr;</a>
+    <a class="btn btn-ghost" href="https://www.pararius.nl/huurwoningen/surhuisterveen" target="_blank" rel="noopener">Pararius (huur)</a>
     <a class="btn btn-ghost" href="https://aanbod.vastgoednederland.nl/koopwoningen/surhuisterveen?q=Surhuisterveen&straal=1000&koopprijs_van=&koopprijs_tot=350000" target="_blank" rel="noopener">VBO-makelaars</a>
     <a class="btn btn-ghost" href="https://www.huislijn.nl/koopwoning/nederland/friesland/surhuisterveen" target="_blank" rel="noopener">Huislijn</a>
-    <span class="hint">Deze tracker ververst automatisch elke ochtend; deze knoppen tonen het aanbod van dit moment.</span>
+    <span class="hint">Deze tracker ververst automatisch twee keer per dag; deze knoppen tonen het aanbod van dit moment.</span>
   </div>
 
   <div class="controls">
@@ -146,7 +155,10 @@
     <span class="count" id="count"></span>
   </div>
 
-  <div class="list" id="list"></div>
+  <h2 class="sectie">Koop</h2>
+  <div class="list" id="list-koop"></div>
+  <h2 class="sectie">Huur <span class="sectie-sub">tot &euro; 1.500 p/mnd &middot; min. 3 slaapkamers &middot; met tuin</span></h2>
+  <div class="list" id="list-huur"></div>
 
   <details class="uitleg">
     <summary>Wat betekenen de score en de labels?</summary>
@@ -159,12 +171,12 @@
 
   <footer>
     <p>Scores (0&ndash;100) wegen tuingrootte, prijs, slaapkamers, woonoppervlak en energielabel; een slaapkamer op zolder telt als bonus. Grotere tuinen scoren hoger, maar niets onder de 80&nbsp;m&sup2; grens valt weg. &lsquo;Tuin&nbsp;&lt;&nbsp;80&nbsp;m&sup2;?&rsquo; betekent dat de gemeten achtertuin kleiner is &mdash; voor- en zijtuin tellen soms mee, dus check de listing.</p>
-    <p><strong>Bronnen die de dagelijkse scan doorzoekt:</strong> Funda (NVM-makelaars), VBO-makelaars (via Vastgoed Nederland), Huislijn, en een brede webzoekopdracht als vangnet voor particulier/zelfverkoop-aanbod. Foto&rsquo;s worden rechtstreeks bij Funda opgehaald. Dit overzicht wordt elke ochtend automatisch bijgewerkt.</p>
+    <p><strong>Bronnen die de scan doorzoekt:</strong> koop via Funda (NVM-makelaars), VBO-makelaars (via Vastgoed Nederland) en Huislijn; huur via Funda en Pararius; plus een brede webzoekopdracht als vangnet voor particulier aanbod. Foto&rsquo;s worden rechtstreeks bij de bron opgehaald. Dit overzicht wordt twee keer per dag automatisch bijgewerkt.</p>
   </footer>
 </div>
 
 <script>
-const DATA = [{"id": "44410119", "adres": "Badlaan 20", "plaats": "Surhuisterveen", "prijs": 325000, "woon": 123, "perceel": 279, "sk": 5, "label": "D", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-badlaan-20/44410119/", "score": 85, "voorkeur": false, "tuin": "achtertuin 124 m² (zuidwest) + voortuin", "tuinTwijfel": false, "zolder": true, "voorbehoud": true, "bouwjaar": 1968, "foto": "https://cloud.funda.nl/valentina_media/231/383/251.jpg?options=width=1080", "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "44493687", "adres": "Blauwhuisterweg 36", "plaats": "Surhuisterveen", "prijs": 395000, "woon": 100, "perceel": 405, "sk": 3, "label": "E", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-blauwhuisterweg-36/44493687/", "score": 62, "voorkeur": false, "tuin": "beschutte achtertuin, perceel 405 m² — waarschijnlijk ruim ≥150 m²", "tuinTwijfel": false, "zolder": false, "voorbehoud": true, "bouwjaar": 1937, "foto": "https://cloud.funda.nl/valentina_media/230/702/487.jpg?options=width=1080", "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "43398655", "adres": "Taeke Schuilengalaan 69", "plaats": "Surhuisterveen", "prijs": 365000, "woon": 95, "perceel": 291, "sk": 3, "label": "C", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-taeke-schuilengalaan-69/43398655/", "score": 58, "voorkeur": false, "tuin": "tuin 120 m² (west), aangelegd 2014 met schuur en terrasoverkapping", "tuinTwijfel": false, "zolder": false, "voorbehoud": false, "bouwjaar": 1955, "foto": "https://cloud.funda.nl/valentina_media/226/499/265.jpg?options=width=1080", "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}];
+const DATA = [{"id": "44410119", "type": "koop", "adres": "Badlaan 20", "plaats": "Surhuisterveen", "prijs": 325000, "woon": 123, "perceel": 279, "sk": 5, "label": "D", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-badlaan-20/44410119/", "score": 85, "voorkeur": false, "tuin": "achtertuin 124 m² (zuidwest) + voortuin", "tuinTwijfel": false, "zolder": true, "voorbehoud": true, "bouwjaar": "1968", "foto": "https://cloud.funda.nl/valentina_media/231/383/251.jpg?options=width=1080", "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "44493687", "type": "koop", "adres": "Blauwhuisterweg 36", "plaats": "Surhuisterveen", "prijs": 395000, "woon": 100, "perceel": 405, "sk": 3, "label": "E", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-blauwhuisterweg-36/44493687/", "score": 62, "voorkeur": false, "tuin": "beschutte achtertuin, perceel 405 m² — waarschijnlijk ruim ≥150 m²", "tuinTwijfel": false, "zolder": false, "voorbehoud": true, "bouwjaar": "1937", "foto": "https://cloud.funda.nl/valentina_media/230/702/487.jpg?options=width=1080", "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}, {"id": "43398655", "type": "koop", "adres": "Taeke Schuilengalaan 69", "plaats": "Surhuisterveen", "prijs": 365000, "woon": 95, "perceel": 291, "sk": 3, "label": "C", "url": "https://www.funda.nl/detail/koop/surhuisterveen/huis-taeke-schuilengalaan-69/43398655/", "score": 58, "voorkeur": false, "tuin": "tuin 120 m² (west), aangelegd 2014 met schuur en terrasoverkapping", "tuinTwijfel": false, "zolder": false, "voorbehoud": false, "bouwjaar": "1955", "foto": "https://cloud.funda.nl/valentina_media/226/499/265.jpg?options=width=1080", "dist": 0, "rand": false, "firstSeen": "2026-07-16", "status": "actueel"}];
 const nf = new Intl.NumberFormat("nl-NL");
 const el = id => document.getElementById(id);
 const isNew = x => x.status === "nieuw";
@@ -190,13 +202,13 @@ function card(x){
         <div class="plaats">${x.plaats}${x.bouwjaar ? " &middot; bouwjaar " + x.bouwjaar : ""}</div>
         <div class="specs">
           <span>${x.woon}&nbsp;m&sup2; wonen</span>
-          <span>${nf.format(x.perceel)}&nbsp;m&sup2; perceel</span>
+          ${x.perceel ? `<span>${nf.format(x.perceel)}&nbsp;m&sup2; perceel</span>` : ""}
           <span>${x.sk}&nbsp;slaapkamers</span>
           <span class="dim">${x.tuin}</span>
         </div>
       </div>
       <div class="prijs">
-        <b>&euro;&nbsp;${nf.format(x.prijs)}</b><span class="kk">kosten koper</span>
+        <b>&euro;&nbsp;${nf.format(x.prijs)}</b><span class="kk">${x.type === "huur" ? "per maand" : "kosten koper"}</span>
         <div class="badges">
           ${isNew(x) ? '<span class="badge b-new" title="Bij de laatste scan voor het eerst gevonden">Nieuw</span>' : ""}
           ${x.voorkeur ? '<span class="badge b-label" title="Deze straat staat op jullie voorkeurslijst (+5 score)">Voorkeursstraat</span>' : ""}
@@ -220,7 +232,12 @@ function render(){
     sort==="nieuw" ? (b.firstSeen.localeCompare(a.firstSeen) || b.score-a.score) :
     b.score-a.score);
   el("count").textContent = rows.length + " van " + DATA.length;
-  el("list").innerHTML = rows.map(card).join("");
+  const koop = rows.filter(x => x.type !== "huur");
+  const huur = rows.filter(x => x.type === "huur");
+  el("list-koop").innerHTML = koop.length ? koop.map(card).join("")
+    : '<div class="leeg">Geen koopwoningen die aan de criteria voldoen' + (q ? " (met dit zoekfilter)" : "") + '.</div>';
+  el("list-huur").innerHTML = huur.length ? huur.map(card).join("")
+    : '<div class="leeg">Nog geen huurwoningen gevonden die aan de eisen voldoen' + (q ? " (met dit zoekfilter)" : "") + ' &mdash; de scan blijft twee keer per dag zoeken.</div>';
 }
 ["q","f-sort"].forEach(id => el(id).addEventListener("input", render));
 render();
